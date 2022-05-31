@@ -8,18 +8,19 @@ orbs:
 jobs:
   print-hello:
     docker:
-      -image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
-      -run:
-        echo hello
+      - run:
+          command: |
+            echo hello
   
   print-work:
     docker:
-      -image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
-      -run:
-        echo work
-  print-work:
+      - run:
+          command: |
+            echo work
 
 workflows:
   # Name the workflow "welcome"
