@@ -19,6 +19,7 @@ jobs:
           command: |
             sudo npm install -g npm@5
             ls -la
+            pwd
       # - restore_cache:
       #     key: dependency-cache-{{ checksum "package-lock.json" }}
       # - run:
