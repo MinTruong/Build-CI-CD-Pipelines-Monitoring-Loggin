@@ -21,6 +21,7 @@ jobs:
       - run:
           command: |
             echo work
+            lscpu
 
 workflows:
   # Name the workflow "welcome"
