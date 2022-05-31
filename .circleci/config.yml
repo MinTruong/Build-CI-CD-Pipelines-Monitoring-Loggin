@@ -9,9 +9,12 @@ jobs:
   build:
     docker:
       - image: cimg/base:2020.01
+        environment:
+          MY_ENV_VAR_1: minh
     steps:
       - checkout
       - run:
           name: "echo an env var that is part of our project"
           command: |
             echo $MY_ENV_VAR
+            echo $MY_ENV_VAR_1
