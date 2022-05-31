@@ -22,6 +22,8 @@ jobs:
           command: |
             echo work
             lscpu
+    
+
 
 workflows:
   # Name the workflow "welcome"
@@ -30,4 +32,6 @@ workflows:
     jobs:
       - welcome/run
       - print-hello
-      - print-work
+      - print-work:
+          requires:
+            - print-hello
