@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   save_hello_world_output:
+    working_directory: ~/test
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -9,6 +10,7 @@ jobs:
           command: |
             echo "hello world" > ~/output.txt
             pwd
+            ls -la
       - persist_to_workspace:
           root: ~/
           paths:
@@ -19,13 +21,13 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - attach_workspace:
-          at: ~/
+          at: ~/test
       - run: cat ~/output.txt
 
 workflows:
   my_workflow:
     jobs:
       - save_hello_world_output
-      # - print_output_file:
-      #     requires:
-      #       - save_hello_world_output
+      - print_output_file:
+          requires:
+            - save_hello_world_output
