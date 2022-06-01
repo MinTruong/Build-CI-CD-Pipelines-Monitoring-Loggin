@@ -8,11 +8,11 @@ jobs:
     steps:
       - run: 
           command: |
-            echo "hello world" > ~/output.txt
+            echo "hello world" > output.txt
             pwd
             ls -la
       - persist_to_workspace:
-          root: ~/
+          root: ./
           paths:
             - output.txt
 
