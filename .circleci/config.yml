@@ -22,7 +22,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/test
-      - run: cat output.txt
+      - run: cat ~/test/output.txt
 
 workflows:
   my_workflow:
