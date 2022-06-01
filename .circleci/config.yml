@@ -9,7 +9,7 @@ jobs:
   save-hello-world-output:
     # working_directory: ~/test
     docker:
-      - image: cimg/base:stable
+      - image: circleci/nodes:13.8.0
     steps:
       -  run:
           name: "Save"
