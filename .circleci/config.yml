@@ -16,4 +16,5 @@ jobs:
 workflows:
   default:
     jobs:
+      - deploy-infrastructure
       
