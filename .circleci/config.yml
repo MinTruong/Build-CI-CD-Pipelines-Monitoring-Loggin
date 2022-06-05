@@ -22,7 +22,6 @@ jobs:
       - run:
           name: checkout
           command: |
-            pwd
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -51,5 +50,5 @@ workflows:
   default:
     jobs:
       - deploy-backend
-      - deploy-frontend
+      # - deploy-frontend
       
