@@ -54,10 +54,11 @@ jobs:
       - run:
           name: Check EC2
           command: |
-            echo [all] > .circleci/ansible/inventory.txt | aws ec2 describe-instances \
-              --filters "Name=tag:Project,Values=udacity" \
-              --query "Reservations[*].Instances[].PublicIpAddress" \
-              --output text >> .circleci/ansible/inventory.txt
+            echo [all] > .circleci/ansible/inventory.txt 
+            aws ec2 describe-instances \
+            --filters "Name=tag:project,Values=udapeople" \
+            --query "Reservations[*].Instances[].PublicIpAddress" \
+            --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: .circleci/ansible
@@ -66,7 +67,7 @@ jobs:
             
   configure-infrastructure:
     docker: 
-      - image: imagepython:3.7-alpine3.11
+      - image: python:3.7-alpine3.11
       # Docker image here that supports Ansible
     steps:
       # Checkout code from git
