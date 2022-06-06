@@ -78,15 +78,16 @@ jobs:
           fingerprints: ["82:2d:ef:37:52:14:5d:9f:2a:b5:39:d8:26:1e:f9:54"]
       - attach_workspace:
           at: .circleci/ansible
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # install the dependencies needed for your playbook
-      #       apk add --update ansible
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
       - run:
           name: Configure server
           command: |
-            cat .circleci/ansible/inventory.txt
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
             
       # Here's where you will add some code to rollback on failure 
 workflows:
