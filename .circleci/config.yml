@@ -44,7 +44,9 @@ jobs:
   
   configure-infrastructure:
     docker: 
-      - image: python:3.7-alpine3.11
+      - image: 
+          python:3.7-alpine3.11
+          amazon/aws-cli
       # Docker image here that supports Ansible
     steps:
       # Checkout code from git
