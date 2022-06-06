@@ -14,6 +14,7 @@ jobs:
   #         command: |
   #           # Your code here
   #           exit 1
+  
   deploy-backend:
     docker:
       - image: amazon/aws-cli
@@ -40,25 +41,34 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
-  # deploy-frontend:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: yum -y install tar gzip
-  #         command: |
-  #           yum -y install tar gzip
-
-  #     - run:
-  #         name: checkout
-  #         command: |
-  #           pwd
-  #           aws cloudformation deploy \
-  #             --template-file .circleci/files/frontend.yml \
-  #             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-  #             --tags project=udapeople
+  
+  configure-infrastructure:
+    docker: 
+      - image: python:3.7-alpine3.11
+      # Docker image here that supports Ansible
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["82:2d:ef:37:52:14:5d:9f:2a:b5:39:d8:26:1e:f9:54"]
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            echo [all] > .circleci/ansible/inventory.txt | aws ec2 describe-instances \
+              --filters "Name=tag:Project,Values=udacity" \
+              --query "Reservations[*].Instances[].PublicDnsName" \
+              --output text >> .circleci/ansible/inventory.txt
+            
+            cat .circleci/ansible/inventory.txt
+            
+      # Here's where you will add some code to rollback on failure 
 workflows:
   default:
     jobs:
