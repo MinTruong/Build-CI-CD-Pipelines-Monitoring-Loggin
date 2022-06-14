@@ -39,6 +39,8 @@ jobs:
              cd backend
              npm install
              npm run build
+             cd node_modules
+             ls -la
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -253,4 +255,5 @@ workflows:
       # - build-backend
       # - run-migrations:
       #     requires: [build-backend]
-      - run-migrations
+      # - run-migrations
+      - build-backend
