@@ -255,5 +255,5 @@ workflows:
       # - build-backend
       # - run-migrations:
       #     requires: [build-backend]
-      # - run-migrations
-      - build-backend
+      - run-migrations
+      # - build-backend
