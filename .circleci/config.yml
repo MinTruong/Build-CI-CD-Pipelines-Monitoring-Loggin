@@ -270,10 +270,9 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: 
-          - amazon/aws-cli
-          - python:3.7-alpine3.11
-          - circleci/node:13.8.0
+      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
