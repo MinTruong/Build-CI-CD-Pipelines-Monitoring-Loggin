@@ -252,7 +252,7 @@ workflows:
       - build-frontend
       - test-frontend:
           requires: [build-frontend]
-      - scan-backend:
+      - scan-frontend:
           requires: [build-frontend]
       # - build-backend
       # - test-backend:
