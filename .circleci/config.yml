@@ -280,6 +280,10 @@ jobs:
           name: Install dependencies
           command: |
             yum -y install tar gzip
+            yum -y update
+            sudo apt -y install nodejs
+            node -v
+            sudo apt install npm
       - run:
           name: Get backend url
           command: |
@@ -291,8 +295,6 @@ jobs:
             echo "${API_URL}" 
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
-
-      - image: circleci/node:13.8.0     
       - run:
           name: Deploy frontend objects
           command: |
