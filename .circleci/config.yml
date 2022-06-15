@@ -219,7 +219,7 @@ jobs:
       # Checkout code from git
       - checkout
       - restore_cache:
-          keys:  [backend-cache]
+          keys:  [backend-build]
       - run:
           name: Run migrations
           command: |
@@ -249,8 +249,8 @@ workflows:
       # - Saving-Ip-EC2
       # - configure-infrastructure:
       #     requires: [Saving-Ip-EC2]
-      # - build-backend
-      # - run-migrations:
-      #     requires: [build-backend]
-      - run-migrations
+      - build-backend
+      - run-migrations:
+          requires: [build-backend]
+      # - run-migrations
       # - build-backend
