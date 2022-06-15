@@ -143,7 +143,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical
       # - slack/notify:
       #     event: fail
       #     template: basic_fail_1
@@ -284,7 +284,6 @@ workflows:
       - test-backend:
           requires: [build-backend]
       - scan-backend:
-
           requires: [build-backend]
       - run-migrations:
           requires: [scan-backend]
