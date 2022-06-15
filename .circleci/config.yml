@@ -180,15 +180,15 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
-      # - run:
-      #     name: deploy frontend
-      #     command: |
-      #       pwd
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/frontend.yml \
-      #         --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-      #         --tags project=udapeople
+      - run:
+          name: deploy frontend
+          command: |
+            pwd
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --tags project=udapeople
               
   Saving-Ip-EC2:
     docker:
@@ -276,10 +276,10 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       npm install
+      - run:
+          name: Install dependencies
+          command: |
+            yum -y install tar gzip
       - run:
           name: Get backend url
           command: |
@@ -292,10 +292,15 @@ jobs:
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
             
-      # - run:
-      #     name: Deploy frontend objects
-      #     command: |
-      #       # your code here
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist s3://udapeople-657224673055 --recursive
       # Here's where you will add some code to rollback on failure    
             
 workflows:
