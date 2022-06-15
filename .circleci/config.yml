@@ -259,6 +259,7 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
+            echo ${CIRCLE_WORKFLOW_ID:0:7}
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
@@ -266,10 +267,32 @@ jobs:
                 # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
                 curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-
-     # Here's where you will add some code to rollback on failure       
+  deploy-frontend:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: 
+          - amazon/aws-cli
+          - python:3.7-alpine3.11
+          - circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+      # - run:
+      #     name: Get backend url
+      #     command: |
+      #       # your code here
+      #       export API_URL="http://${BACKEND_IP}:3030"
+      #       echo "${API_URL}"
+      # - run:
+      #     name: Deploy frontend objects
+      #     command: |
+      #       # your code here
+      # Here's where you will add some code to rollback on failure    
             
-      # Here's where you will add some code to rollback on failure 
 workflows:
   default:
     jobs:
@@ -282,12 +305,14 @@ workflows:
       #     requires: [build-frontend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - build-backend
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - run-migrations:
-          requires: [scan-backend]
+      # - build-backend
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - run-migrations:
+      #     requires: [scan-backend]
       # - run-migrations
       # - build-backend
+
+      - deploy-frontend
