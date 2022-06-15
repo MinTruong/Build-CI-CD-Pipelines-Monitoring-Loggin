@@ -270,8 +270,8 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      # - image: cimg/node:16.13.1
-      - image: amazon/aws-cli
+      - image: cimg/node:16.13.1
+      # - image: amazon/aws-cli
     resource_class: medium
     steps:
       # Checkout code from git
@@ -281,20 +281,21 @@ jobs:
           command: |
             # yum -y install tar gzip
             # yum update
-            yum -y install nodejs
-            node -v
+            # yum -y install nodejs
+            # node -v
             # sudo apt install npm
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-            echo ID ${CIRCLE_WORKFLOW_ID:0:7}
-            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
-            echo $BACKEND_IP
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}" 
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-            cat frontend/.env
+            sudo apt update
+      # - run:
+      #     name: Get backend url
+      #     command: |
+      #       # your code here
+      #       echo ID ${CIRCLE_WORKFLOW_ID:0:7}
+      #       export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+      #       echo $BACKEND_IP
+      #       export API_URL="http://${BACKEND_IP}:3030"
+      #       echo "${API_URL}" 
+      #       echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+      #       cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -302,8 +303,9 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            ls -la
             # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            aws s3 cp dist s3://udapeople-657224673055 --recursive
+            # aws s3 cp dist s3://udapeople-657224673055 --recursive
       # Here's where you will add some code to rollback on failure    
             
 workflows:
