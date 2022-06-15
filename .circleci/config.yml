@@ -2,6 +2,18 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.1
+
+commands:
+  intsall/aws-cli:
+    steps:
+      - run:
+          name: Install aws-cli
+          command: |
+            sudo apt install curl
+            sudo apt install unzip
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
 jobs:
   build-frontend:
     docker:
@@ -276,6 +288,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - intsall/aws-cli
       - run:
           name: Install dependencies
           command: |
@@ -304,8 +317,8 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             ls -la
-            # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            # aws s3 cp dist s3://udapeople-657224673055 --recursive
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist s3://udapeople-657224673055 --recursive
       # Here's where you will add some code to rollback on failure    
             
 workflows:
