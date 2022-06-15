@@ -251,9 +251,9 @@ workflows:
       #     requires: [Saving-Ip-EC2]
       - build-backend
       - test-backend:
-          requires: [build-Backend]
+          requires: [build-backend]
       - scan-backend:
-          requires: [build-Backend]
+          requires: [build-backend]
       - run-migrations:
           requires: [scan-backend]
       # - run-migrations
