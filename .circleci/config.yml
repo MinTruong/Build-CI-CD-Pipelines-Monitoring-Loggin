@@ -280,7 +280,7 @@ jobs:
           name: Install dependencies
           command: |
             # yum -y install tar gzip
-            yum update
+            # yum update
             yum -y install nodejs
             node -v
             # sudo apt install npm
