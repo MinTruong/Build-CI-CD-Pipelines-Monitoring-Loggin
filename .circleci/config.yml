@@ -26,56 +26,57 @@ jobs:
           event: pass
           template: success_tagged_deploy_1
   
-  # build-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     - run:
-  #         name: Back-end build
-  #         command: |
-  #            cd backend
-  #            ls -la
-  #            npm install https://github.com/googleapis/release-please
-  #            npm run build
-    
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
-  #     - slack/notify:
-  #         event: fail
-  #         template: basic_fail_1
-  #     - slack/notify:
-  #         event: pass
-  #         template: success_tagged_deploy_1
-  
   build-backend:
     docker:
       - image: circleci/node:13.8.0
-      - image: cimg/postgres:14.0
-        environment: 
-          POSTGRES_USER: postgres
-          POSTGRES_DB: glee2
-          POSTGRES_PASSWORD: password
     steps:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      - setup_remote_docker: 
-          version: 20.10.14
       - run:
-          name: Build back-end
+          name: Back-end build
           command: |
-            # code here
-            echo $TYPEORM_ENTITIES
-            cd backend
-            npm install
-            npm run start& 
+             cd backend
+             ls -la
+            #  https://github.com/googleapis/release-please
+             npm install 
+            #  npm run build
+    
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+  
+  # build-backend:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #     - image: cimg/postgres:14.0
+  #       environment: 
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_DB: glee2
+  #         POSTGRES_PASSWORD: password
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [backend-build]
+  #     - setup_remote_docker: 
+  #         version: 20.10.14
+  #     - run:
+  #         name: Build back-end
+  #         command: |
+  #           # code here
+  #           echo $TYPEORM_ENTITIES
+  #           cd backend
+  #           npm install
+  #           npm run start& 
+  #     - save_cache:
+  #         paths: [backend/node_modules]
+  #         key: backend-build
 
   test-frontend:
     docker:
