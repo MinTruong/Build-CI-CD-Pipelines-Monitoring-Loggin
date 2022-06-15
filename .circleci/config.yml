@@ -180,15 +180,15 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
-      - run:
-          name: checkout
-          command: |
-            pwd
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --tags project=udapeople
+      # - run:
+      #     name: deploy frontend
+      #     command: |
+      #       pwd
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+      #         --tags project=udapeople
               
   Saving-Ip-EC2:
     docker:
@@ -270,22 +270,25 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: cimg/node:16.13.1
+      # - image: cimg/node:16.13.1
+      - image: amazon/aws-cli
     resource_class: medium
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/setup
-      - run:
-          name: Install dependencies
-          command: |
-            npm install
       # - run:
-      #     name: Get backend url
+      #     name: Install dependencies
       #     command: |
-      #       # your code here
-      #       export API_URL="http://${BACKEND_IP}:3030"
-      #       echo "${API_URL}"
+      #       npm install
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            echo ID ${CIRCLE_WORKFLOW_ID:0:7}
+            export BACKEND_IP= $(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            echo $BACKEND_IP
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
       # - run:
       #     name: Deploy frontend objects
       #     command: |
@@ -314,4 +317,8 @@ workflows:
       # - run-migrations
       # - build-backend
 
-      - deploy-frontend
+
+      - deploy-infrastructure
+      - deploy-frontend:
+          requires: 
+            - deploy-infrastructure
