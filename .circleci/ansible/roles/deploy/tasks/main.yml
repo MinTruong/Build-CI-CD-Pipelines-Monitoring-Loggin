@@ -7,7 +7,7 @@
 # - name: "install dependencies."
 #   become: true
 #   apt:
-#     name: ["nodejs", "npm", "tar", "pm2"]
+#     name: ["tar"]
 #     state: latest
 #     update_cache: yes
 
@@ -30,11 +30,20 @@
 #     cd /home/app
 #     tar -vxf artifact.tar.gz
 
+- name: install nodejs and npm
+  become: true
+  shell: 
+    cmd: |
+      cd ~
+      curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+      sudo bash /tmp/nodesource_setup.sh
+      sudo apt install nodejs
+      
 - name: build and start node
   become: true
   shell: 
     cmd: |
-      npm i pm2
+      sudo npm install pm2@latest -g
       cd /home/app
       pm2 stop default
       pm2 start npm -- start
