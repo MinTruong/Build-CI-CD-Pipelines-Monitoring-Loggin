@@ -15,5 +15,5 @@
   become: true
   file:
     path: /home/app
-    state: direction
+    state: directory
     mode: 0755
