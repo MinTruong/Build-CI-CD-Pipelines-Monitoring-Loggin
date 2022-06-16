@@ -330,7 +330,28 @@ jobs:
             ls -la
             # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             aws s3 cp dist s3://udapeople-657224673055 --recursive
-      # Here's where you will add some code to rollback on failure    
+
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.7-alpine3.11
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["82:2d:ef:37:52:14:5d:9f:2a:b5:39:d8:26:1e:f9:54"]
+      - attach_workspace:
+          at: .circleci/ansible
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Deploy backend
+          command: |
+            pwd
             
 workflows:
   default:
@@ -355,9 +376,9 @@ workflows:
       # - build-backend
 
 
-      - deploy-infrastructure
-      - deploy-frontend:
-          requires: 
-            - deploy-infrastructure
+      # - deploy-infrastructure
+      # - deploy-frontend:
+      #     requires: 
+      #       - deploy-infrastructure
 
-      # - deploy-frontend
+      - deploy-backend
