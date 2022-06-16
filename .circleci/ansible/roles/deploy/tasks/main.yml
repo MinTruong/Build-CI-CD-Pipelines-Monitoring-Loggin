@@ -16,3 +16,4 @@
   file:
     path: /home/app
     state: direction
+    mode: "0755"
