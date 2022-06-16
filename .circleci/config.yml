@@ -194,23 +194,23 @@ jobs:
           name: yum -y install tar gzip
           command: |
             yum -y install tar gzip
-      # - run:
-      #     name: deploy backend
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/backend.yml \
-      #         --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-      #         --tags project=udapeople
       - run:
-          name: deploy frontend
+          name: deploy backend
           command: |
-            pwd
             aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --template-file .circleci/files/backend.yml \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
+      # - run:
+      #     name: deploy frontend
+      #     command: |
+      #       pwd
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/frontend.yml \
+      #         --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+      #         --tags project=udapeople
               
   Saving-Ip-EC2:
     docker:
@@ -387,7 +387,7 @@ workflows:
       # - build-backend
 
 
-      # - deploy-infrastructure
+      - deploy-infrastructure
       # - deploy-frontend:
       #     requires: 
       #       - deploy-infrastructure
