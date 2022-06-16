@@ -348,7 +348,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            yum -y install tar gzip
+            apk add tar
       - run:
           name: Deploy backend
           command: |
