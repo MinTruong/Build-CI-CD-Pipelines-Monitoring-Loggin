@@ -218,10 +218,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: yum -y install tar gzip
-          command: |
-            yum -y install tar gzip
-      - run:
           name: Check EC2
           command: |
             echo [all] > .circleci/ansible/inventory.txt 
@@ -387,7 +383,7 @@ workflows:
       # - build-backend
 
 
-      - deploy-infrastructure
+      # - deploy-infrastructure
       # - deploy-frontend:
       #     requires: 
       #       - deploy-infrastructure
