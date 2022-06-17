@@ -71,7 +71,6 @@ jobs:
   build-backend:
     docker:
       - image: circleci/node:13.8.0
-      - image: cimg/postgres:14.0
         environment: 
           POSTGRES_USER: postgres
           POSTGRES_DB: glee2
@@ -80,19 +79,15 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      - setup_remote_docker: 
-          version: 20.10.14
       - run:
           name: Build back-end
           command: |
-            cd /frontend/node_modules
-            ls -la
-            cd ..
-            cd ..
             echo $TYPEORM_ENTITIES
             cd backend
             npm install
-            npm run start& 
+            npm run build
+            sleep 10
+            node dist/main.js
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -129,4 +124,3 @@ workflows:
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
-      
