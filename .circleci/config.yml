@@ -424,7 +424,7 @@ workflows:
       #     requires : [test-backend]
       # - configure-infrastructure:
       #     requires: [scan-backend]
-      - sSaving-Ip-EC2
+      - Saving-Ip-EC2
       - deploy-infrastructure:
           requires : [configure-infrastructure, Saving-Ip-EC2]
       - run-migrations:
