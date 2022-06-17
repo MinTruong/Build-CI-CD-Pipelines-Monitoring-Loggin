@@ -333,7 +333,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: python:3.7-alpine3.11
+      - image: python:3.11-rc-alpine
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -348,9 +348,6 @@ jobs:
           command: |
             apk add --update ansible
             apk add tar
-            apk add --update nodejs
-            apk add --update npm
-            
       - run:
           name: Deploy backend
           command: |
@@ -425,9 +422,12 @@ workflows:
       # - configure-infrastructure:
       #     requires: [scan-backend]
 
-      # - deploy-infrastructure
-      # - Saving-Ip-EC2:
-      #     requires : [deploy-infrastructure]
+      - deploy-infrastructure
+      - Saving-Ip-EC2:
+          requires : [deploy-infrastructure]
+      - deploy-backend:
+          requires: [Saving-Ip-EC2]
+
       # - Saving-Ip-EC2
       # - configure-infrastructure:
       #     requires : [Saving-Ip-EC2]
@@ -436,8 +436,8 @@ workflows:
       #     requires : [deploy-infrastructure]
       # - deploy-backend:
       #     requires : [run-migrations]
-      - Saving-Ip-EC2
-      - deploy-backend:
-          requires: [Saving-Ip-EC2]
+      # - Saving-Ip-EC2
+      # - deploy-backend:
+      #     requires: [Saving-Ip-EC2]
 
       
