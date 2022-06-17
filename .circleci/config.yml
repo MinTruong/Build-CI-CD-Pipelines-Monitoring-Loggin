@@ -257,6 +257,9 @@ jobs:
             echo "TYPEORM_USERNAME"=postgres >> backend/.env
             echo "TYPEORM_PASSWORD"=password >> backend/.env
             echo "TYPEORM_DATABASE"=glee2 >> backend/.env
+
+            cd backend
+            ls-la
       - persist_to_workspace:
           root: .
           paths:
