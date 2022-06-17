@@ -236,8 +236,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout 
-      # - restore_cache:
-      #     keys: [backend-build]
+      - restore_cache:
+          keys: [backend-build]
       - aws_cli_intsall
       - aws_configure_credential
       - run:
@@ -445,9 +445,9 @@ workflows:
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
 
-      - build-backend
-      - run-migrations:
-          requires: [build-backend]
+      # - build-backend
+      - run-migrations
+          # requires: [build-backend]
 
       # - run-migrations:
           # requires:
