@@ -84,8 +84,8 @@ jobs:
           POSTGRES_PASSWORD: password
     steps:
       - checkout
-      # - restore_cache:
-      #     keys: [backend-build]
+      - restore_cache:
+          keys: [backend-build]
       - setup_remote_docker: 
           version: 20.10.14
       - run:
@@ -96,9 +96,9 @@ jobs:
             cd backend
             npm install
             npm run start& 
-      # - save_cache:
-      #     paths: [backend/node_modules]
-      #     key: backend-build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
   # -----test frontend----
   test-frontend:
@@ -272,6 +272,7 @@ jobs:
             npm install
             ls -la
             npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
