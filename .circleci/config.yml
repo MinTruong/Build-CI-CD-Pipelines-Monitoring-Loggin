@@ -258,8 +258,10 @@ jobs:
             echo "TYPEORM_PASSWORD"=password >> backend/.env
             echo "TYPEORM_DATABASE"=glee2 >> backend/.env
 
+            
             cd backend
-            ls-la
+            ls -la
+            cat .env
       - persist_to_workspace:
           root: .
           paths:
