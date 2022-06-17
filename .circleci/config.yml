@@ -417,18 +417,18 @@ workflows:
   default:
     jobs:
       
-      # - build-backend
-      # - test-backend:
-      #     requires : [build-backend]
-      # - scan-backend:
-      #     requires : [test-backend]
-      # - configure-infrastructure:
-      #     requires: [scan-backend]
-      # - deploy-infrastructure:
-      #     requires : [configure-backend]
-      # - run-migrations:
-      #     requires : [deploy-infrastructure]
-      # - deploy-backend:
-      #     requires : [run-migrations]
+      - build-backend
+      - test-backend:
+          requires : [build-backend]
+      - scan-backend:
+          requires : [test-backend]
+      - configure-infrastructure:
+          requires: [scan-backend]
+      - deploy-infrastructure:
+          requires : [configure-backend]
+      - run-migrations:
+          requires : [deploy-infrastructure]
+      - deploy-backend:
+          requires : [run-migrations]
 
-      - run-migrations
+      
