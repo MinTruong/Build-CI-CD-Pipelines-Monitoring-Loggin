@@ -244,6 +244,7 @@ jobs:
           name: Create file .env for migration and deployment backend
           command: |
             # echo -e "VERSION=1\nTYPEORM_CONNECTION=${TYPEORM_CONNECTION}\nTYPEORM_MIGRATIONS_DIR=${TYPEORM_MIGRATIONS_DIR}\nTYPEORM_ENTITIES=${TYPEORM_ENTITIES}\nTYPEORM_MIGRATIONS=${TYPEORM_MIGRATIONS}\nTYPEORM_HOST=${TYPEORM_HOST}\nTYPEORM_PORT=${TYPEORM_PORT}\nTYPEORM_USERNAME=${TYPEORM_USERNAME}\nTYPEORM_PASSWORD=${TYPEORM_PASSWORD}\nTYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
+            echo ENVIRONMENT=production >> backend/.env
             echo "VERSION=1" >> backend/.env
             echo "TYPEORM_CONNECTION=postgres" >> backend/.env
             echo "TYPEORM_MIGRATIONS_DIR=./src/migrations" >> backend/.env
@@ -257,6 +258,7 @@ jobs:
             echo "TYPEORM_DATABASE=glee" >> backend/.env
 
             cd backend
+            cat .env
             ls -la
 
       - persist_to_workspace:
