@@ -269,11 +269,12 @@ jobs:
             - backend/.env
       - run:
           name: run migration commnad 
+          # working_directory: ./backend
           command: |
             pwd
             cd backend
-            npm install
             ls -la
+            npm install
             npm run migrations > migrations_dump.txt       
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
