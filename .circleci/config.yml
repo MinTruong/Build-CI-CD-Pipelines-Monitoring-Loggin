@@ -437,7 +437,9 @@ workflows:
       # - deploy-backend:
       #     requires : [run-migrations]
       - Saving-Ip-EC2
-      - deploy-backend:
-          requires: [Saving-Ip-EC2]
+      - configure-infrastructure:
+          requires : [Saving-Ip-EC2]
+      # - deploy-backend:
+      #     requires: [Saving-Ip-EC2]
 
       
