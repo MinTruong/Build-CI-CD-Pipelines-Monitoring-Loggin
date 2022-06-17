@@ -1,20 +1,20 @@
 ---
-- name: "upgrade packages."
-  become: true
-  apt:
-    upgrade: "yes"
+# - name: "upgrade packages."
+#   become: true
+#   apt:
+#     upgrade: "yes"
 
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["tar"]
-    state: latest
-    update_cache: yes
+# - name: "install dependencies."
+#   become: true
+#   apt:
+#     name: ["tar"]
+#     state: latest
+#     update_cache: yes
 
 - name: "create direction"
   become: true
   file:
-    path: /home/app
+    path: /home/ubuntu/app/
     state: directory
     mode: 0755
 
@@ -22,12 +22,12 @@
   become: true
   copy:
     src: /root/project/artifact.tar.gz
-    dest: /home/app/artifact.tar.gz
+    dest: /home/ubuntu/app/artifact.tar.gz
 
 - name: unzip
   become: true
   shell: |
-    cd /home/app
+    cd /home/ubuntu/app
     tar -vxf artifact.tar.gz
 
 # - name: install nodejs and npm
@@ -39,11 +39,11 @@
 #       sudo bash /tmp/nodesource_setup.sh
 #       sudo apt install nodejs
 
-- name: build and start node
-  become: true
-  shell: 
-    cmd: |
-      # sudo npm install pm2@latest -g
-      cd /home/app
-      pm2 stop default
-      pm2 start npm -- start
+# - name: build and start node
+#   become: true
+#   shell: 
+#     cmd: |
+#       # sudo npm install pm2@latest -g
+#       cd /home/app
+#       pm2 stop default
+#       pm2 start npm -- start
