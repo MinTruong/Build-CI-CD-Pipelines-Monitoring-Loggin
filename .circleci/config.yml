@@ -198,7 +198,7 @@ jobs:
           command: |
             sleep 60
             echo "[web]" > .circleci/ansible/inventory.txt | aws ec2 describe-instances \
-              --filters "Name=project,Values=udapeople" \
+              --filters "Name=tag:project,Values=udapeople" \
               --query "Reservations[*].Instances[].PublicIpAddress" \
               --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
@@ -225,9 +225,12 @@ workflows:
       #     filters:
       #       branches:
       #         only: [test-feature-branch]
-      - deploy-infrastructure
-      - get-ip-backend:
-          requires: [deploy-infrastructure]
+
+      # - deploy-infrastructure
+      # - get-ip-backend:
+      #     requires: [deploy-infrastructure]
+      
+      - get-ip-backend
       # - configure-infrastructure:
       #     requires: [get-ip-backend]
       # - run-migrations:
