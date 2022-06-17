@@ -30,20 +30,20 @@
     cd /home/app
     tar -vxf artifact.tar.gz
 
-- name: install nodejs and npm
-  become: true
-  shell: 
-    cmd: |
-      cd ~
-      curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
-      sudo bash /tmp/nodesource_setup.sh
-      sudo apt install nodejs
+# - name: install nodejs and npm
+#   become: true
+#   shell: 
+#     cmd: |
+#       cd ~
+#       curl -sL https://deb.nodesource.com/setup_13.8 -o /tmp/nodesource_setup.sh
+#       sudo bash /tmp/nodesource_setup.sh
+#       sudo apt install nodejs
 
 - name: build and start node
   become: true
   shell: 
     cmd: |
-      sudo npm install pm2@latest -g
+      # sudo npm install pm2@latest -g
       cd /home/app
       pm2 stop default
       pm2 start npm -- start
