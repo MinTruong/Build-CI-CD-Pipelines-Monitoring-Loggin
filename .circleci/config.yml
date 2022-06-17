@@ -84,8 +84,8 @@ jobs:
           POSTGRES_PASSWORD: password
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - setup_remote_docker: 
           version: 20.10.14
       - run:
@@ -96,9 +96,9 @@ jobs:
             cd backend
             npm install
             npm run start& 
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+      # - save_cache:
+      #     paths: [backend/node_modules]
+      #     key: backend-build
 
   # -----test frontend----
   test-frontend:
