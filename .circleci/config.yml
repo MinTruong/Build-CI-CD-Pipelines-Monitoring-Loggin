@@ -25,9 +25,10 @@ commands:
       - run:
           name: Revert migrations
           when: on_fail
-          working_directory: ./backend
+          restore_cache:
+            key: [run-migrations]
           command: |
-            if grep -q "has been executed successfully." migrations_dump.txt
+            if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
               cat migrations_dump.txt
@@ -37,11 +38,9 @@ commands:
               npm install
               npm run migration:revert
             fi
-            
-      - persist_to_workspace:
-          root: ~/project/
-          paths:
-            - backend/migrations_dump.txt
+        save_cache:
+          paths: [.circle/backend/migrations_dump.txt]
+          key: [run-migration]
           
   aws_cli_intsall:
     steps:
@@ -290,6 +289,9 @@ jobs:
           root: .
           paths:
             - backend/.env
+      
+      - restore_cache:
+          keys: [run-migration]
       - run:
           name: run migration
           working_directory: ./backend
@@ -298,7 +300,10 @@ jobs:
             echo revert table DB
             npm run migrations:revert
             echo "++++Migration++++"
-            npm run migrations > migrations_dump.txt          
+            npm run migrations > migrations_dump.txt  
+      - save_cache:
+          paths: [./migrations_dump.txt]
+          key: [run-migration]        
       - run:
           working_directory: ./backend
           name: save status migration 
@@ -498,9 +503,9 @@ workflows:
       #     requires: [get-ip-ec2]
       # - smoke-test:
       #     requires: [deploy-backend]
-
+      - run-migrations
       - smoke-test
-          # requires: [build-backend]
+          requires: [run-migrations]
 
       # - run-migrations:
           # requires:
