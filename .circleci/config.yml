@@ -197,18 +197,44 @@ jobs:
       #         --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
       #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
       #         --tags project=udapeople
-      - run:
-          name: Get IPv4 Public of server backend
-          command: |
-            echo "[web]" > .circleci/ansible/inventory.txt | aws ec2 describe-instances \
-              --filters "Name=tag-value,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query "Reservations[*].Instances[].PublicDnsName" \
-              --output text >> .circleci/ansible/inventory.txt
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .circleci/ansible/inventory.txt
       - destroy_environment
+  
+  get-ip-ec2:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: yum -y install tar gzip
+          command: |
+            yum -y install tar gzip
+      - run:
+          name: Check EC2
+          command: |
+            echo [web] > .circleci/ansible/inventory.txt 
+            aws ec2 describe-instances \
+            --filters "Name=tag:project,Values=udapeople" \
+            --query "Reservations[*].Instances[].PublicIpAddress" \
+            --output text >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: .circleci/ansible
+          paths:
+            - inventory.txt
+
+
+      # - run:
+      #     name: Get IPv4 Public of server backend
+      #     command: |
+      #       echo "[web]" > .circleci/ansible/inventory.txt | aws ec2 describe-instances \
+      #         --filters "Name=tag-value,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --query "Reservations[*].Instances[].PublicDnsName" \
+      #         --output text >> .circleci/ansible/inventory.txt
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - .circleci/ansible/inventory.txt
+      
 
   # -----Configure Infrastructure-----------
   configure-infrastructure:
@@ -333,13 +359,13 @@ jobs:
           command: |
             apk add --update ansible tar npm curl
             apk add --no-cache aws-cli
-      - attach_workspace:
-          at: .
+      # - attach_workspace:
+      #     at: .
       - run: 
-          name: build backend
+          name: build and zip backend
           command: |
-            echo "NODE_ENV=production" >> backend/.env
             cd backend
+            echo "NODE_ENV=production" >> .env
             npm i
             npm run build
             cd ..
@@ -462,7 +488,10 @@ workflows:
       #     requires: [deploy-infrastructure]
 
       # - build-backend
+      - get-ip-ec2
       - run-migrations
+      - deploy-backend:
+          requires: [get-ip-ec2]
           # requires: [build-backend]
 
       # - run-migrations:
