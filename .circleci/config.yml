@@ -233,7 +233,7 @@ jobs:
   # -----run migration------
   run-migrations:
     docker: 
-      - image: circleci/node:13.14.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout 
       - restore_cache:
@@ -241,22 +241,20 @@ jobs:
       - aws_cli_intsall
       - aws_configure_credential
       - run:
-          name: Create file .env for migration and deployment backend
+          name: Create file .env for migrations
           command: |
             
             touch ~/project/backend/.env
-            # echo -e "VERSION=1\nTYPEORM_CONNECTION=${TYPEORM_CONNECTION}\nTYPEORM_MIGRATIONS_DIR=${TYPEORM_MIGRATIONS_DIR}\nTYPEORM_ENTITIES=${TYPEORM_ENTITIES}\nTYPEORM_MIGRATIONS=${TYPEORM_MIGRATIONS}\nTYPEORM_HOST=${TYPEORM_HOST}\nTYPEORM_PORT=${TYPEORM_PORT}\nTYPEORM_USERNAME=${TYPEORM_USERNAME}\nTYPEORM_PASSWORD=${TYPEORM_PASSWORD}\nTYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
             echo "ENVIRONMENT=production" >> backend/.env
-            echo "TYPEORM_CONNECTION=postgres" >> backend/.env
-            echo "TYPEORM_MIGRATIONS_DIR=./src/migrations" >> backend/.env
-            echo "TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts" >> backend/.env
-            echo "TYPEORM_MIGRATIONS=./src/migrations/*.ts" >> backend/.env
-
-            echo "TYPEORM_HOST=postgres.c1pg8d8pvblz.us-east-1.rds.amazonaws.com" >> backend/.env               
-            echo "TYPEORM_PORT=5432" >> backend/.env
-            echo "TYPEORM_USERNAME=postgres" >> backend/.env
-            echo "TYPEORM_PASSWORD=password" >> backend/.env
-            echo "TYPEORM_DATABASE=glee" >> backend/.env
+            echo "TYPEORM_CONNECTION=${TYPEORM_CONNECTION}" >> backend/.env
+            echo "TYPEORM_MIGRATIONS_DIR=${TYPEORM_MIGRATIONS_DIR}" >> backend/.env
+            echo "TYPEORM_ENTITIES=${TYPEORM_ENTITIES}" >> backend/.env
+            echo "TYPEORM_MIGRATIONS=${TYPEORM_ENTITIES}" >> backend/.env
+            echo "TYPEORM_HOST=${TYPEORM_HOST}" >> backend/.env               
+            echo "TYPEORM_PORT=${TYPEORM_PORT}" >> backend/.env
+            echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> backend/.env
+            echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> backend/.env
+            echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
             echo "NODE_ENV=development" >> backend/.env
 
             cd backend
@@ -268,7 +266,7 @@ jobs:
           paths:
             - backend/.env
       - run:
-          name: run migration commnad 
+          name: run migration
           # working_directory: ./backend
           command: |
             pwd
