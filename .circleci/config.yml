@@ -28,7 +28,8 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            cat backend/.env
+            pwd
+            cat .circle/backend/migrations_dump.txt
             if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
@@ -39,9 +40,11 @@ commands:
               npm install
               npm run migration:revert
             fi
-      - save_cache:
-          key: backend-build
-          paths: [.circle/backend]
+      # - save_cache:
+      #     key: backend-build
+      #     paths: 
+      #       - backend/node_modules
+            
           
   aws_cli_intsall:
     steps:
@@ -290,12 +293,11 @@ jobs:
           root: .
           paths:
             - backend/.env
-      
       - run:
           name: run migration
           command: |
             cd backend
-            npm install
+            npm install            
             npm run migrations > migrations_dump.txt  
             cd ..
       - save_cache:
@@ -414,7 +416,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
-              return 0
+              return 1
             else
               return 1
             fi
