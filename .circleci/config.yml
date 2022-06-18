@@ -266,10 +266,12 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout 
-      - restore_cache:
-          keys: [backend-build]
       - aws_cli_intsall
       - aws_configure_credential
+      - restore_cache:
+          keys:
+            - backend-build
+            - run-migration
       - run:
           name: Create file .env for migrations
           command: |    
@@ -290,16 +292,11 @@ jobs:
           paths:
             - backend/.env
       
-      - restore_cache:
-          keys: [run-migration]
       - run:
           name: run migration
           working_directory: ./backend
           command: |
             npm install
-            echo revert table DB
-            npm run migrations:revert
-            echo "++++Migration++++"
             npm run migrations > migrations_dump.txt  
       - save_cache:
           paths: [./migrations_dump.txt]
