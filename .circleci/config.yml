@@ -116,7 +116,7 @@ jobs:
             echo $TYPEORM_ENTITIES
             cd backend
             npm install
-            npm run start& 
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -309,8 +309,7 @@ jobs:
             cd ..
       - save_cache:
           key: migrations
-          paths: 
-            - backend/migrations_dump
+          paths: [backend/migrations_dump]
           
       - run:
           working_directory: ./backend
@@ -429,7 +428,6 @@ jobs:
             else
               return 1
             fi
-
       - destroy_environment
       - revert_migrations
 
