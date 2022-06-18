@@ -25,6 +25,7 @@
     tar -vxf artifact.tar.gz
 
 - name: build and start node
+  become: true
   shell: |
     cd /home/ubuntu/app
     npm install
