@@ -273,7 +273,7 @@ jobs:
             echo revert table DB
             npm run migrations:revert
             echo "++++Migration++++"
-            npm run migrations > migrations_dump.txt    
+            npm run migrations > migrations_dump.txt          
       - persist_to_workspace:
           root: .
           paths:
@@ -281,14 +281,12 @@ jobs:
 
       - run:
           working_directory: ./backend
-          name: Send migration status to kvdb.io OR memstash.io
+          name: save status migration 
           command: |   
             if grep -q "has been executed successfully." migrations_dump.txt
             then
-                # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
-                curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-                # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
-                # curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                echo "because 3rd-party service down so we use working space to save status as well file "
+                cat migrations_dump.txt
             fi
 
       # - destroy_environment
