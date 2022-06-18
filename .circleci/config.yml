@@ -22,11 +22,11 @@ commands:
     steps:
       - attach_workspace:
           at: .
+      - restore_cache:
+            key: [run-migrations]
       - run:
           name: Revert migrations
           when: on_fail
-          restore_cache:
-            key: [run-migrations]
           command: |
             if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
             then
@@ -38,7 +38,7 @@ commands:
               npm install
               npm run migration:revert
             fi
-        save_cache:
+      - save_cache:
           paths: [.circle/backend/migrations_dump.txt]
           key: [run-migration]
           
@@ -302,7 +302,7 @@ jobs:
             echo "++++Migration++++"
             npm run migrations > migrations_dump.txt  
       - save_cache:
-          paths: [./migrations_dump.txt]
+          paths: [migrations_dump.txt]
           key: [run-migration]        
       - run:
           working_directory: ./backend
