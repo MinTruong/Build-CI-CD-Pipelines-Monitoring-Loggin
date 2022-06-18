@@ -273,8 +273,8 @@ jobs:
             cd backend
             ls -la
             npm install
-            # echo revert table DB
-            # npm run migrations:revert
+            echo revert table DB
+            npm run migrations:revert
             npm run migrations > migrations_dump.txt    
             cat migrations_dump.txt   
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
