@@ -16,6 +16,7 @@ commands:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
             aws cloudformation delete-stack \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+
   revert_migrations:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
@@ -23,15 +24,14 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            # Your Memstash GET URL code goes here
-            # See an example below
-            VALUE=$(curl -k https://kvdb.io/64xvxrRXspfWtdyJZVPqvf/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if [[ $VALUE -eq 1 ]]
-            then
               cd ~/project/backend
               npm install
               npm run migration:revert
-            fi 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/migrations_dump.txt
+          
   aws_cli_intsall:
     steps:
       - run:
@@ -54,7 +54,9 @@ commands:
 
 
 jobs:
-  # ----build frontend-----
+  ##################################################################################
+  #                            ----build frontend-----                             #
+  ##################################################################################
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -73,7 +75,10 @@ jobs:
           paths: [frontend/node_modules]
           key: frontend-build
   
-  # -----build backend------
+
+  ##################################################################################
+  #                           -----build backend------                             #
+  ##################################################################################
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -100,7 +105,10 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
-  # -----test frontend----
+
+  ##################################################################################
+  #                           -----test frontend------                             #
+  ##################################################################################
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -210,7 +218,7 @@ jobs:
       - checkout 
       - add_ssh_keys:
           fingerprints:
-            - "24:4e:39:7a:30:81:ed:c9:3b:a9:b8:0c:df:d3:1d:aa"
+            - "82:2d:ef:37:52:14:5d:9f:2a:b5:39:d8:26:1e:f9:54"
       - run: 
           name: Install independencies
           command: |
@@ -242,8 +250,7 @@ jobs:
       - aws_configure_credential
       - run:
           name: Create file .env for migrations
-          command: |
-            
+          command: |    
             touch ~/project/backend/.env
             echo "ENVIRONMENT=production" >> backend/.env
             echo "TYPEORM_CONNECTION=${TYPEORM_CONNECTION}" >> backend/.env
@@ -255,12 +262,7 @@ jobs:
             echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> backend/.env
             echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> backend/.env
             echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
-            echo "NODE_ENV=development" >> backend/.env
-
-            cd backend
-            cat .env
-            ls -la
-
+            # echo "NODE_ENV=development" >> backend/.env
       - persist_to_workspace:
           root: .
           paths:
@@ -274,11 +276,6 @@ jobs:
             npm run migrations:revert
             echo "++++Migration++++"
             npm run migrations > migrations_dump.txt          
-      - persist_to_workspace:
-          root: .
-          paths:
-            - backend/migrations_dump.txt 
-
       - run:
           working_directory: ./backend
           name: save status migration 
@@ -288,8 +285,11 @@ jobs:
                 echo "because 3rd-party service down so we use working space to save status as well file "
                 cat migrations_dump.txt
             fi
-
-      # - destroy_environment
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/migrations_dump.txt
+      - destroy_environment
   
   deploy-frontend:
     docker: 
@@ -317,6 +317,9 @@ jobs:
       - destroy_environment
       - revert_migrations
 
+  ##################################################################################
+  #                           -----deploy-backend------                            #
+  ##################################################################################
   deploy-backend:
     docker: 
       - image: python:3.11-rc-alpine
@@ -324,7 +327,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "24:4e:39:7a:30:81:ed:c9:3b:a9:b8:0c:df:d3:1d:aa"
+            - "82:2d:ef:37:52:14:5d:9f:2a:b5:39:d8:26:1e:f9:54"
       - run: 
           name: Install independencies
           command: |
@@ -347,8 +350,8 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      - destroy_environment
-      - revert_migrations
+      # - destroy_environment
+      # - revert_migrations
   
   smoke-test:
     docker: 
