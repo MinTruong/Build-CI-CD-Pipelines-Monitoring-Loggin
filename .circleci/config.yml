@@ -23,7 +23,7 @@ commands:
       - attach_workspace:
           at: .
       - restore_cache:
-            key: [run-migrations]
+            keys: [run-migrations]
       - run:
           name: Revert migrations
           when: on_fail
@@ -39,8 +39,8 @@ commands:
               npm run migration:revert
             fi
       - save_cache:
-          paths: [.circle/backend/migrations_dump.txt]
           key: [run-migration]
+          paths: [.circle/backend/migrations_dump.txt]
           
   aws_cli_intsall:
     steps:
@@ -302,7 +302,7 @@ jobs:
             echo "++++Migration++++"
             npm run migrations > migrations_dump.txt  
       - save_cache:
-          paths: [migrations_dump.txt]
+          paths: [./migrations_dump.txt]
           key: [run-migration]        
       - run:
           working_directory: ./backend
