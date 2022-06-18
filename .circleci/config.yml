@@ -218,9 +218,9 @@ jobs:
             --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
-          root: .circleci/ansible
+          root: .
           paths:
-            - inventory.txt
+            - .circleci/ansible/inventory.txt
 
 
       # - run:
@@ -359,8 +359,8 @@ jobs:
           command: |
             apk add --update ansible tar npm curl
             apk add --no-cache aws-cli
-      # - attach_workspace:
-      #     at: .
+      - attach_workspace:
+          at: .
       - run: 
           name: build and zip backend
           command: |
