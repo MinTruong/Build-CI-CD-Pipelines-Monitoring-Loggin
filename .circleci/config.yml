@@ -504,7 +504,7 @@ workflows:
       # - smoke-test:
       #     requires: [deploy-backend]
       - run-migrations
-      - smoke-test
+      - smoke-test:
           requires: [run-migrations]
 
       # - run-migrations:
