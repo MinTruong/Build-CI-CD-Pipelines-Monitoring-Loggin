@@ -496,9 +496,9 @@ workflows:
       - run-migrations:
           requires: [build-backend]
       - deploy-frontend:
-          requires: [get-ip-ec2,configure-infrastructure]
+          requires: [get-ip-ec2, configure-infrastructure]
       - deploy-backend:
-          requires: [run-migrations, get-ip-ec2]
+          requires: [get-ip-ec2, run-migrations]
       - smoke-test:
           requires: [deploy-frontend, deploy-backend]
 
@@ -517,9 +517,6 @@ workflows:
       #     requires: [get-ip-ec2]
       # - smoke-test:
       #     requires: [deploy-backend]
-      - run-migrations
-      - smoke-test:
-          requires: [run-migrations]
 
       # - run-migrations:
           # requires:
