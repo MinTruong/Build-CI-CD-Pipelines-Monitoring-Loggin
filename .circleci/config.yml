@@ -39,7 +39,7 @@ commands:
               npm run migration:revert
             fi
       - save_cache:
-          key: [backend-build]
+          key: backend-build
           paths: [.circle/backend]
           
   aws_cli_intsall:
@@ -299,7 +299,7 @@ jobs:
             cd ..
       - save_cache:
           paths: [backend]
-          key: [backend-build]        
+          key: backend-build
       - run:
           working_directory: ./backend
           name: save status migration 
