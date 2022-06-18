@@ -23,7 +23,7 @@ commands:
       - attach_workspace:
           at: .
       - restore_cache:
-            keys: [run-migrations]
+            keys: [backend-build]
       - run:
           name: Revert migrations
           when: on_fail
@@ -39,8 +39,8 @@ commands:
               npm run migration:revert
             fi
       - save_cache:
-          key: [run-migration]
-          paths: [.circle/backend/migrations_dump.txt]
+          key: [backend-build]
+          paths: [.circle/backend]
           
   aws_cli_intsall:
     steps:
@@ -271,7 +271,6 @@ jobs:
       - restore_cache:
           keys:
             - backend-build
-            - run-migration
       - run:
           name: Create file .env for migrations
           command: |    
@@ -294,13 +293,14 @@ jobs:
       
       - run:
           name: run migration
-          working_directory: ./backend
           command: |
+            cd backend
             npm install
             npm run migrations > migrations_dump.txt  
+            cd ..
       - save_cache:
-          paths: [./migrations_dump.txt]
-          key: [run-migration]        
+          paths: [backend]
+          key: [backend-build]        
       - run:
           working_directory: ./backend
           name: save status migration 
@@ -310,10 +310,10 @@ jobs:
                 echo "because 3rd-party service down so we use working space to save status as well file "
                 cat migrations_dump.txt
             fi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - backend/migrations_dump.txt
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - backend/migrations_dump.txt
       - destroy_environment
   
   ##################################################################################
