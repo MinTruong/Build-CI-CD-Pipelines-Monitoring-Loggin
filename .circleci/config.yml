@@ -29,8 +29,8 @@ commands:
           command: |
             pwd
             ls -la
-            cd node_modules
-            ls -la
+            
+            
             if grep -q "has been executed successfully." backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
@@ -398,10 +398,10 @@ jobs:
   smoke-test:
     docker: 
       - image: python:3.11-rc-alpine
-    - restore_cache:
-            keys: [run-migrations]
     steps:
       - checkout
+      - restore_cache:
+            keys: [run-migrations]
       - run: 
           name: Install dependencies
           command: |
