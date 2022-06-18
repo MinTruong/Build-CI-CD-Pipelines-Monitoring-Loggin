@@ -20,8 +20,8 @@ commands:
   revert_migrations:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
-      # - attach_workspace:
-      #     at: .
+      - attach_workspace:
+          at: .
       - run:
           working_directory: ./backend
           name: Revert migrations
@@ -29,7 +29,6 @@ commands:
           command: |
             pwd
             ls -la
-            
             
             if grep -q "has been executed successfully." backend/migrations_dump.txt
             then
@@ -292,10 +291,6 @@ jobs:
             echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> backend/.env
             echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
             # echo "NODE_ENV=development" >> backend/.env
-      - persist_to_workspace:
-          root: .
-          paths:
-            - backend/.env
       - run:
           name: run migration
           command: |
@@ -305,11 +300,12 @@ jobs:
             cat migrations_dump.txt
             ls -la
             cd ..
-      - save_cache:
-          key: run-migrations
-          paths: 
-            - backend/node_modules
-            - backend/migrations_dump.txt
+      
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/.env
+            - backend/migrations_dump.txt 
             
           
       - run:
