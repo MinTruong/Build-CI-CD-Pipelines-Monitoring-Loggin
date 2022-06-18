@@ -23,7 +23,7 @@ commands:
       # - attach_workspace:
       #     at: .
       - restore_cache:
-            keys: [migrations]
+            keys: [build-backend]
       - run:
           working_directory: ./backend
           name: Revert migrations
