@@ -273,6 +273,7 @@ jobs:
             cd backend
             ls -la
             npm install
+            echo revert table DB
             npm run migrations:revert
             npm run migrations > migrations_dump.txt    
             cat migrations_dump.txt   
