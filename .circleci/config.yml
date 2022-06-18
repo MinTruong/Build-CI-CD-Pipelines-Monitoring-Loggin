@@ -17,30 +17,30 @@ commands:
             aws cloudformation delete-stack \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
 
-  revert_migrations:
-    description: Revert the last migration if successfully run in the current workflow.
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          working_directory: ./backend
-          name: Revert migrations
-          when: on_fail
-          command: |
-            pwd
-            ls -la
-            
-            if grep -q "has been executed successfully." backend/migrations_dump.txt
-            then
-              echo "because 3rd-party service down so we use working space to save status as well file "
-              cat migrations_dump.txt
-            else
-              echo Revert migrations
-              cd ~/project/backend
-              npm install
-              ls -la
-              npm run migrations:revert
-            fi
+  # revert_migrations:
+  #   description: Revert the last migration if successfully run in the current workflow.
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         working_directory: ./backend
+  #         name: Revert migrations
+  #         when: on_fail
+  #         command: |
+  #           pwd
+  #           ls -la
+
+  #           if grep -q "has been executed successfully." backend/migrations_dump.txt
+  #           then
+  #             echo "because 3rd-party service down so we use working space to save status as well file "
+  #             cat migrations_dump.txt
+  #           else
+  #             echo Revert migrations
+  #             cd ~/project/backend
+  #             npm install
+  #             ls -la
+  #             npm run migrations:revert
+  #           fi
       # - save_cache:
       #     key: backend-build
       #     paths: 
@@ -97,17 +97,17 @@ jobs:
   build-backend:
     docker:
       - image: circleci/node:13.8.0
-      - image: cimg/postgres:14.0
-        environment: 
-          POSTGRES_USER: postgres
-          POSTGRES_DB: glee
-          POSTGRES_PASSWORD: password
+      # - image: cimg/postgres:14.0
+      #   environment: 
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_DB: glee
+      #     POSTGRES_PASSWORD: password
     steps:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      - setup_remote_docker: 
-          version: 20.10.14
+      # - setup_remote_docker: 
+      #     version: 20.10.14
       - run:
           name: Build back-end
           command: |
@@ -119,7 +119,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-
 
   ##################################################################################
   #                           -----test frontend------                             #
@@ -275,7 +274,7 @@ jobs:
       - aws_configure_credential
       - restore_cache:
           keys: 
-            - run-migrations
+            - build-backend
       - run:
           name: Create file .env for migrations
           command: |    
@@ -296,32 +295,31 @@ jobs:
           command: |
             cd backend
             npm install   
+            echo "----------------------------------------------------------------revet DB before migration"
+            npm run migrations:revert
+            echo "----------------------------------------------------------------run migration"
             npm run migrations > migrations_dump.txt  
-            cat migrations_dump.txt
+            
             ls -la
             cd ..
-      
       - persist_to_workspace:
           root: .
           paths:
             - backend/.env
             - backend/migrations_dump.txt 
-            
-          
+        
       - run:
           working_directory: ./backend
           name: save status migration 
           command: |   
+            echo "--------------------------------------------------check file .env and migrations_dump have been"
+            ls -la
+            cat migrations_dump.txt
             if grep -q "has been executed successfully." migrations_dump.txt
             then
                 echo "because 3rd-party service down so we use working space to save status as well file "
-                cat migrations_dump.txt
             fi
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - backend/migrations_dump.txt
-      - destroy_environment
+      # - destroy_environment
   
   ##################################################################################
   #                           -----deploy-frontend------                           #
@@ -350,7 +348,7 @@ jobs:
             # tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy_environment
-      - revert_migrations
+      
 
   ##################################################################################
   #                           -----deploy-backend------                            #
@@ -385,8 +383,8 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      # - destroy_environment
-      # - revert_migrations
+      - destroy_environment
+      
   
   ##################################################################################
   #                            -----smoke-test------                               #
@@ -396,8 +394,6 @@ jobs:
       - image: python:3.11-rc-alpine
     steps:
       - checkout
-      - restore_cache:
-            keys: [run-migrations]
       - run: 
           name: Install dependencies
           command: |
@@ -428,7 +424,6 @@ jobs:
               return 1
             fi
       - destroy_environment
-      - revert_migrations
 
   cloudfront-update:
     docker: 
@@ -478,22 +473,36 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires:
-      #       - "build-frontend"
-      # - test-backend:
-      #     requires:
-      #       - "build-backend"
-      # - scan-frontend:
-      #     requires:
-      #       - "build-frontend"
-      # - scan-backend:
-      #     requires:
-      #       - "build-backend"
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires:
+            - "build-frontend"
+      - test-backend:
+          requires:
+            - "build-backend"
+      - scan-frontend:
+          requires:
+            - "build-frontend"
+      - scan-backend:
+          requires:
+            - "build-backend"
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - get-ip-ec2:
+          requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [get-ip-ec2]
+      - run-migrations:
+          requires: [build-backend]
+      - deploy-frontend:
+          requires: [get-ip-ec2,configure-infrastructure]
+      - deploy-backend:
+          requires: [run-migrations, get-ip-ec2]
+      - smoke-test:
+          requires: [deploy-frontend, deploy-backend]
+
+
       #     # filters:
       #     #   branches:
       #     #     only: [projectc-new]
