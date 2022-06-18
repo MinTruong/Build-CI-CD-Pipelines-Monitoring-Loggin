@@ -278,8 +278,7 @@ jobs:
       - aws_configure_credential
       - restore_cache:
           keys: 
-            # - backend-build
-            - migrations
+            - backend-build
       - run:
           name: Create file .env for migrations
           command: |    
@@ -311,8 +310,8 @@ jobs:
             cd ..
             cd ..
       - save_cache:
-          key: migrations
-          paths: [backend/migrations_dump]
+          key: build-backend
+          paths: [backend/node_modules]
           
       - run:
           working_directory: ./backend
