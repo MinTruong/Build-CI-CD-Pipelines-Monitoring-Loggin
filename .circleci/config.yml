@@ -269,8 +269,7 @@ jobs:
       - aws_cli_intsall
       - aws_configure_credential
       - restore_cache:
-          keys:
-            - backend-build
+          keys: [backend-build]
       - run:
           name: Create file .env for migrations
           command: |    
@@ -501,8 +500,8 @@ workflows:
       # - smoke-test:
       #     requires: [deploy-backend]
       - run-migrations
-      - smoke-test:
-          requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [run-migrations]
 
       # - run-migrations:
           # requires:
