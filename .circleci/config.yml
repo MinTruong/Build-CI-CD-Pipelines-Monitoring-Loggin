@@ -22,8 +22,6 @@ commands:
     steps:
       # - attach_workspace:
       #     at: .
-      - restore_cache:
-            keys: [run-migrations]
       - run:
           working_directory: ./backend
           name: Revert migrations
@@ -400,6 +398,8 @@ jobs:
   smoke-test:
     docker: 
       - image: python:3.11-rc-alpine
+    - restore_cache:
+            keys: [run-migrations]
     steps:
       - checkout
       - run: 
