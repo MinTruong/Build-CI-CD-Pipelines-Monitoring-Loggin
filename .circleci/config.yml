@@ -40,6 +40,7 @@ commands:
               echo Revert migrations
               cd ~/project/backend
               npm install
+              ls -la
               npm run migration:revert
             fi
       # - save_cache:
