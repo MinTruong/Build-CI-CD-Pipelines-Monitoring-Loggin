@@ -416,6 +416,7 @@ jobs:
             else
               return 1
             fi
+
       - destroy_environment
       - revert_migrations
 
@@ -498,7 +499,7 @@ workflows:
       # - smoke-test:
       #     requires: [deploy-backend]
 
-      - smoke-test:
+      - smoke-test
           # requires: [build-backend]
 
       # - run-migrations:
