@@ -23,7 +23,7 @@ commands:
       # - attach_workspace:
       #     at: .
       - restore_cache:
-            keys: [build-backend]
+            keys: [run-migrations]
       - run:
           working_directory: ./backend
           name: Revert migrations
@@ -311,6 +311,7 @@ jobs:
           key: run-migrations
           paths: 
             - backend/node_modules
+            - backend/migrations_dump.txt
             
           
       - run:
