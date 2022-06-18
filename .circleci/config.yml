@@ -31,7 +31,7 @@ commands:
           command: |
             pwd
             ls -la
-            if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
               cat migrations_dump.txt
@@ -307,7 +307,6 @@ jobs:
       - save_cache:
           key: backend-build
           paths: 
-            - backend/node_modules
             - backend/migrations_dump.txt
           
       - run:
