@@ -31,6 +31,8 @@ commands:
           command: |
             pwd
             ls -la
+            cd node_modules
+            ls -la
             if grep -q "has been executed successfully." backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
@@ -276,7 +278,7 @@ jobs:
       - aws_configure_credential
       - restore_cache:
           keys: 
-            - backend-build
+            # - backend-build
             - migrations
       - run:
           name: Create file .env for migrations
@@ -302,10 +304,11 @@ jobs:
           command: |
             cd backend
             npm install    
-            mkdir migrations_dump
-            npm run migrations > migrations_dump/migrations_dump.txt  
-            cat migrations_dump/migrations_dump.txt
+            npm run migrations > node_modules/migrations_dump.txt  
+            cat node_modules/migrations_dump.txt
+            cd node_modules 
             ls -la
+            cd ..
             cd ..
       - save_cache:
           key: migrations
