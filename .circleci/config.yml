@@ -28,6 +28,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
+            cat backend/.env
             if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
