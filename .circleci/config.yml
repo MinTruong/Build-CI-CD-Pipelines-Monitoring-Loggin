@@ -31,7 +31,6 @@ commands:
           command: |
             pwd
             ls -la
-            
             if grep -q "has been executed successfully." .circle/backend/migrations_dump.txt
             then
               echo "because 3rd-party service down so we use working space to save status as well file "
@@ -41,7 +40,7 @@ commands:
               cd ~/project/backend
               npm install
               ls -la
-              npm run migration:revert
+              npm run migrations:revert
             fi
       # - save_cache:
       #     key: backend-build
@@ -302,10 +301,14 @@ jobs:
             cd backend
             npm install            
             npm run migrations > migrations_dump.txt  
+            cat migrations_dump.txt
             cd ..
       - save_cache:
-          paths: [backend]
           key: backend-build
+          paths: 
+            - backend/node_modules
+            - backend/migrations_dump.txt
+          
       - run:
           working_directory: ./backend
           name: save status migration 
