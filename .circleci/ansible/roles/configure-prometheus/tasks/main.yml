@@ -23,7 +23,7 @@
 - name: "add prometheus.yml"
   become: true
   copy:
-    src: /root/project/.circleci/ansible/roles/configure-prometheus/prometheus.yaml
+    src: prometheus.yaml
     dest: /etc/prometheus/
     remote_src: yes
     owner: prometheus
