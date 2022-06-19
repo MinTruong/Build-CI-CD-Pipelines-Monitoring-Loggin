@@ -1,5 +1,4 @@
 ---
-
 - name: "configuration play." 
   hosts: web
   user: ubuntu
@@ -32,4 +31,3 @@
   roles:
     - deploy
     - configure-node-exporter
-
