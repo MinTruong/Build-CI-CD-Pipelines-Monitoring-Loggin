@@ -438,8 +438,8 @@ jobs:
               --query "Exports[?Name=='WorkflowID'].Value" \
               --output text)
 
-            echo $OldWorkflowID >> ~/OldWorkflowID.txt
-            cat ~/OldWorkflowID
+            echo $OldWorkflowID >> OldWorkflowID.txt
+            cat OldWorkflowID
 
             # echo "-------------------------------------------------------Running update cloudfront distribution "
             # aws cloudformation deploy \
