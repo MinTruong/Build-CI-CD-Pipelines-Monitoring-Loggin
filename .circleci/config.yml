@@ -439,7 +439,7 @@ jobs:
             #   --output text)
             # export OldWorkflowID=(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
             aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text >> OldWorkflowID.text
-            cat inventory.txt
+            cat OldWorkflowID.text
               
             # echo $OldWorkflowID 
 
