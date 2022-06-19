@@ -12,10 +12,10 @@ commands:
           when: on_fail
           command: |
             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            aws cloudformation delete-stack \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
-            aws cloudformation delete-stack \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+            # aws cloudformation delete-stack \
+            #   --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            # aws cloudformation delete-stack \
+            #   --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
 
   # revert_migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -148,7 +148,10 @@ jobs:
             cd frontend
             npm install
             npm run test
-  # -----test backend-----
+
+  ##################################################################################
+  #                           -----test backend-----                               #
+  ##################################################################################
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -168,7 +171,10 @@ jobs:
       # - slack/notify:
       #     event: pass
       #     template: success_tagged_deploy_1
-  # -----scan-frontend-----
+
+  ##################################################################################
+  #                           -----scan-frontend-----                              #
+  ##################################################################################   
   scan-frontend:
     docker: 
       - image: circleci/node:13.8.0
@@ -190,7 +196,9 @@ jobs:
       #     event: pass
       #     template: success_tagged_deploy_1
   
-  # ----scan-backend-----
+  ##################################################################################
+  #                           ----scan-backend-----                                #
+  ##################################################################################   
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -211,7 +219,9 @@ jobs:
       #     event: pass
       #     template: success_tagged_deploy_1
 
-  # ----deploy infrastructure frontend backend-----
+  ##################################################################################
+  #             ----deploy infrastructure, frontend and backend-----               #
+  ##################################################################################
   deploy-infrastructure:
     docker: 
       - image: amazon/aws-cli
@@ -222,14 +232,14 @@ jobs:
           name: isntall tar
           command: | 
             yum install -y tar gzip
-      - run:
-          name: Deploy Infrastructure Backend
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
+      # - run:
+      #     name: Deploy Infrastructure Backend
+      #     command: |
+      #       aws cloudformation deploy \
+      #         --template-file .circleci/files/backend.yml \
+      #         --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --tags project=udapeople
       - run:
           name: Deploy Infrastructure Frontend
           command: |
@@ -239,7 +249,10 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       - destroy_environment
-  
+
+##################################################################################
+#                         ----get ip EC2 backend server-----                     #
+##################################################################################
   get-ip-ec2:
     docker:
       - image: amazon/aws-cli
@@ -263,7 +276,9 @@ jobs:
           paths:
             - .circleci/ansible/inventory.txt
 
-  # -----Configure Infrastructure-----------
+##################################################################################
+#                  -----Configure Infrastructure-----------                      #
+##################################################################################
   configure-infrastructure:
     docker:
       - image: python:3.11-rc-alpine
@@ -426,18 +441,18 @@ jobs:
           command: |
             apk add --update ansible curl nodejs npm
             apk add --no-cache aws-cli
-      - run:
-          name: Check Backend Smoke Test
-          command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[].PublicIpAddress" --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
-            then
-                return 0
-            else
-                return 1
-            fi
+      # - run:
+      #     name: Check Backend Smoke Test
+      #     command: |
+      #       export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[].PublicIpAddress" --output text)
+      #       export API_URL="http://${BACKEND_IP}:3030"
+      #       echo "${API_URL}"
+      #       if curl "${API_URL}/api/status" | grep "ok"
+      #       then
+      #           return 0
+      #       else
+      #           return 1
+      #       fi
       - run:
           name: Frontend Smoke Test 
           command: |
@@ -450,7 +465,7 @@ jobs:
             else
               return 1
             fi
-      - destroy_environment
+      # - destroy_environment
 
   cloudfront-update:
     docker: 
@@ -511,37 +526,45 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - scan-backend:
-          requires: [build-backend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [projectc-new]
-      - get-ip-ec2:
-          requires: [deploy-infrastructure]
-      - configure-infrastructure:
-          requires: [get-ip-ec2]
-      - run-migrations:
-          requires: [test-backend, scan-backend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [projectc-new]
+      # - get-ip-ec2:
+      #     requires: [deploy-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [get-ip-ec2]
+      # - run-migrations:
+      #     requires: [test-backend, scan-backend]
+      # - deploy-frontend:
+      #     requires: [get-ip-ec2, configure-infrastructure]
+      # - deploy-backend:
+      #     requires: [get-ip-ec2, run-migrations, configure-infrastructure]
+      # - smoke-test:
+      #     requires: [deploy-frontend, deploy-backend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup-phase:
+      #     requires: [cloudfront-update]
+
+      - deploy-infrastructure
       - deploy-frontend:
-          requires: [get-ip-ec2, configure-infrastructure]
-      - deploy-backend:
-          requires: [get-ip-ec2, run-migrations, configure-infrastructure]
+          requires: [deploy-infrastructure]
       - smoke-test:
-          requires: [deploy-frontend, deploy-backend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup-phase:
-          requires: [cloudfront-update]
+          requires: [deploy-frontend]
+
+
 
       
 
