@@ -437,11 +437,11 @@ jobs:
             # export OldWorkflowID=(aws cloudformation list-exports \
             #   --query "Exports[?Name=='WorkflowID'].Value" \
             #   --output text)
-            # export OldWorkflowID=(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
-            aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text >> OldWorkflowID.text
-            cat OldWorkflowID.text
+            export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
+            # aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text >> OldWorkflowID.text
+            # cat OldWorkflowID.text
               
-            # echo $OldWorkflowID 
+            echo $OldWorkflowID 
 
             # echo "-------------------------------------------------------Running update cloudfront distribution "
             # aws cloudformation deploy \
