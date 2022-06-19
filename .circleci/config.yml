@@ -514,6 +514,7 @@ workflows:
       #     requires: [deploy-frontend, deploy-backend]
 
       # - cloudfront-update
-      - cleanup-phase
+      # - cleanup-phase
 
+      - deploy-infrastructure
      
