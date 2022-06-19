@@ -20,12 +20,12 @@
 #     sudo cp prometheus-2.19.0.linux-amd64/promtool /usr/local/bin/
 #     rm -rf prometheus-2.19.0.linux-amd64.tar.gz prometheus-2.19.0.linux-amd64
 
-- name: "add prometheus.yml"
-  become: true
-  copy:
-    src: prometheus.yaml
-    dest: /etc/prometheus/
-    remote_src: yes
+# - name: "add prometheus.yml"
+#   become: true
+#   copy:
+#     src: prometheus.yaml
+#     dest: /etc/prometheus/
+#     remote_src: yes
     # owner: prometheus
     # group: prometheus        
     # mode: 0777
