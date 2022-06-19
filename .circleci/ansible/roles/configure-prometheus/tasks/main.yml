@@ -26,9 +26,9 @@
     src: prometheus.yaml
     dest: /etc/prometheus/
     remote_src: yes
-    owner: prometheus
-    group: prometheus        
-    mode: 0777
+    # owner: prometheus
+    # group: prometheus        
+    # mode: 0777
 
 - name: "add file prometheus.service"
   become: true
