@@ -564,6 +564,17 @@ workflows:
       # - smoke-test:
       #     requires: [deploy-frontend]
 
+      - deploy-infrastructure
+      - get-ip-ec2:
+          requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [get-ip-ec2]
+      - deploy-backend:
+          requires: [configure-infrastructure]
+
+      
+      
+
 
 
       
