@@ -573,7 +573,7 @@ workflows:
       #     requires: [configure-infrastructure]
       
       - get-ip-ec2 
-      - deploy-backend
+      - deploy-backend:
           requires: [get-ip-ec2]
 
       
