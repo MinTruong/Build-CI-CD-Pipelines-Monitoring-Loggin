@@ -410,7 +410,7 @@ jobs:
             apk add --no-cache aws-cli
       - attach_workspace:
           at: .
-      - run: 
+      # - run: 
           # name: build and zip backend
           # command: |
           #   cd backend
@@ -573,8 +573,8 @@ workflows:
       #     requires: [configure-infrastructure]
       
       - get-ip-ec2 
-      # - deploy-backend:
-      #     requires: [get-ip-ec2]
+      - deploy-backend:
+          requires: [get-ip-ec2]
 
       
       
