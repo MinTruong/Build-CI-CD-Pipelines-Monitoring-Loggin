@@ -434,11 +434,14 @@ jobs:
       - run:
           name: Deploy Infrastructure CloudFront
           command: | 
-            export OldWorkflowID=(aws cloudformation list-exports \
-              --query "Exports[?Name=='WorkflowID'].Value" \
-              --output text)
-
-            echo $OldWorkflowID 
+            # export OldWorkflowID=(aws cloudformation list-exports \
+            #   --query "Exports[?Name=='WorkflowID'].Value" \
+            #   --output text)
+            # export OldWorkflowID=(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
+            aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text >> OldWorkflowID.text
+            cat inventory.txt
+              
+            # echo $OldWorkflowID 
 
             # echo "-------------------------------------------------------Running update cloudfront distribution "
             # aws cloudformation deploy \
