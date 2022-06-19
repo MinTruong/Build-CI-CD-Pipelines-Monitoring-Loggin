@@ -25,6 +25,7 @@
   copy:
     src: /root/project/.circleci/ansible/roles/configure-prometheus/prometheus.yaml
     dest: /etc/prometheus/
+    remote_src: yes
     owner: prometheus
     group: prometheus        
     mode: 0777
