@@ -25,6 +25,9 @@
   copy:
     src: /root/project/.circleci/ansible/roles/configure-prometheus/prometheus.yaml
     dest: /etc/prometheus/
+    owner: prometheus
+    group: prometheus        
+    mode: 0777
 
 - name: "add file prometheus.service"
   become: true
