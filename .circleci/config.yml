@@ -411,14 +411,14 @@ jobs:
       - attach_workspace:
           at: .
       - run: 
-          name: build and zip backend
-          command: |
-            cd backend
-            echo "NODE_ENV=production" >> .env
-            npm i
-            npm run build
-            cd ..
-            tar -C backend -czvf artifact.tar.gz .
+          # name: build and zip backend
+          # command: |
+          #   cd backend
+          #   echo "NODE_ENV=production" >> .env
+          #   npm i
+          #   npm run build
+          #   cd ..
+          #   tar -C backend -czvf artifact.tar.gz .
       - run: 
           name: deploy backend with ansible
           command: |
@@ -564,13 +564,17 @@ workflows:
       # - smoke-test:
       #     requires: [deploy-frontend]
 
-      - deploy-infrastructure
-      - get-ip-ec2:
-          requires: [deploy-infrastructure]
-      - configure-infrastructure:
+      # - deploy-infrastructure
+      # - get-ip-ec2:
+      #     requires: [deploy-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [get-ip-ec2]
+      # - deploy-backend:
+      #     requires: [configure-infrastructure]
+      
+      - get-ip-ec2 
+      - deploy-backend
           requires: [get-ip-ec2]
-      - deploy-backend:
-          requires: [configure-infrastructure]
 
       
       
