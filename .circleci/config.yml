@@ -236,18 +236,18 @@ jobs:
           name: Deploy Infrastructure Backend
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
+            --template-file .circleci/files/backend.yml \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
       - run:
           name: Deploy Infrastructure Frontend
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
+            --template-file .circleci/files/frontend.yml \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
       - destroy_environment
 
 ##################################################################################
@@ -290,8 +290,8 @@ jobs:
       - run: 
           name: Install independencies
           command: |
-            apk add --update ansible
             apk add --no-cache aws-cli
+            apk add --update ansible
       - attach_workspace:
           at: .
       - aws_configure_credential
@@ -312,16 +312,14 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout 
-      - aws_cli_intsall
-      - aws_configure_credential
       - restore_cache:
-          keys: 
-            - build-backend
+          keys: [backend-build]
+      - aws_cli_intsall    
+      - aws_configure_credential
       - run:
           name: Create file .env for migrations
           command: |    
-            touch ~/project/backend/.env
-            echo "ENVIRONMENT=production" >> backend/.env
+            touch ~/project/backend/.env     
             echo "TYPEORM_CONNECTION=${TYPEORM_CONNECTION}" >> backend/.env
             echo "TYPEORM_MIGRATIONS_DIR=${TYPEORM_MIGRATIONS_DIR}" >> backend/.env
             echo "TYPEORM_ENTITIES=${TYPEORM_ENTITIES}" >> backend/.env
@@ -331,7 +329,11 @@ jobs:
             echo "TYPEORM_USERNAME=${TYPEORM_USERNAME}" >> backend/.env
             echo "TYPEORM_PASSWORD=${TYPEORM_PASSWORD}" >> backend/.env
             echo "TYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
-            # echo "NODE_ENV=development" >> backend/.env
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/.env
+
       - run:
           name: run migration
           command: |
@@ -343,25 +345,19 @@ jobs:
             echo "----------------------------------------------------------------run migration"
             npm run migrations > migrations_dump.txt  
             ls -la
-            cd ..
+            cd ..  
 
-      - persist_to_workspace:
-          root: .
-          paths:
-            - backend/.env
-            - backend/migrations_dump.txt 
-        
-      - run:
-          working_directory: ./backend
-          name: save status migration 
-          command: |   
-            echo "--------------------------------------------------check file .env and migrations_dump have been"
-            ls -la
-            cat migrations_dump.txt
-            if grep -q "has been executed successfully." migrations_dump.txt
-            then
-                echo "because 3rd-party service down so we use working space to save status as well file "
-            fi
+      # - run:
+      #     working_directory: ./backend
+      #     name: save status migration 
+      #     command: |   
+      #       echo "--------------------------------------------------check file .env and migrations_dump have been"
+      #       ls -la
+      #       cat migrations_dump.txt
+      #       if grep -q "has been executed successfully." migrations_dump.txt
+      #       then
+      #           echo "because 3rd-party service down so we use working space to save status as well file "
+      #       fi
       # - destroy_environment
   
   ##################################################################################
@@ -375,7 +371,7 @@ jobs:
       - aws_cli_intsall
       - aws_configure_credential
       - run:
-          name: Get backend URL
+          name: Get ip EC2 backend 
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[].PublicIpAddress" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
@@ -383,7 +379,7 @@ jobs:
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
-          name: deploy frontend objects
+          name: deploy frontend 
           command: |
             cd frontend
             npm install
@@ -415,8 +411,8 @@ jobs:
           name: build and zip backend
           command: |
             cd backend
-            echo "NODE_ENV=production" >> .env
-            npm i
+            echo "NODE_ENV=production" >> backend/.env
+            npm run install
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
