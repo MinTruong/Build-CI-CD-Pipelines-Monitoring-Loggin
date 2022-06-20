@@ -411,9 +411,12 @@ jobs:
           name: build and zip backend
           command: |
             cd backend
+            echo "--------------------------------before .env"
+            echo cat .env
             echo "NODE_ENV=production" >> .env
             npm run install
             npm run build
+            echo "--------------------------------after .env"
             cat .env
             cd ..
             tar -C backend -czvf artifact.tar.gz .
