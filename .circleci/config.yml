@@ -411,9 +411,10 @@ jobs:
           name: build and zip backend
           command: |
             cd backend
-            echo "NODE_ENV=production" >> backend/.env
+            echo "NODE_ENV=production" >> .env
             npm run install
             npm run build
+            cat .env
             cd ..
             tar -C backend -czvf artifact.tar.gz .
       - run: 
@@ -544,9 +545,9 @@ workflows:
       - run-migrations:
           requires: [test-backend, scan-backend]
       - deploy-frontend:
-          requires: [get-ip-ec2, run-migrations, configure-infrastructure]
+          requires: [run-migrations, configure-infrastructure]
       - deploy-backend:
-          requires: [get-ip-ec2, run-migrations, configure-infrastructure]
+          requires: [run-migrations, configure-infrastructure]
       - smoke-test:
           requires: [deploy-frontend, deploy-backend]
       - cloudfront-update:
