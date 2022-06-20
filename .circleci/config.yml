@@ -366,21 +366,21 @@ jobs:
   ##################################################################################
   #                           -----deploy-frontend------                           #
   ##################################################################################
-  # deploy-frontend:
-  #   docker: 
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout 
-  #     - aws_cli_intsall
-  #     - aws_configure_credential
-  #     - run:
-  #         name: Get backend URL
-  #         command: |
-  #           export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[].PublicIpAddress" --output text)
-  #           export API_URL="http://${BACKEND_IP}:3030"
-  #           echo "API_URL = ${API_URL}"
-  #           echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-  #           cat frontend/.env
+  deploy-frontend:
+    docker: 
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout 
+      - aws_cli_intsall
+      - aws_configure_credential
+      - run:
+          name: Get backend URL
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:project,Values=udapeople" --query "Reservations[*].Instances[].PublicIpAddress" --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
           name: deploy frontend objects
           command: |
