@@ -388,7 +388,8 @@ jobs:
             npm install
             npm run build
             # tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist http://udapeople-a343558.s3-website-us-east-1.amazonaws.com --recursive
+            # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy_environment
       
 
@@ -558,9 +559,10 @@ workflows:
       # - cleanup-phase:
       #     requires: [cloudfront-update]
 
-      - run-migrations
-      - deploy-frontend:
-          requires: [run-migrations]
+      # - run-migrations
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      - deploy-frontend
       
       
 
