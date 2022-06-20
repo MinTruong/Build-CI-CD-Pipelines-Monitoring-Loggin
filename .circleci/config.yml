@@ -337,13 +337,13 @@ jobs:
           command: |
             cd backend
             npm install   
-            echo "----------------------------------------------------------------revet DB before migration"
-            npm run migrations:revert
+            # echo "----------------------------------------------------------------revet DB before migration"
+            # npm run migrations:revert
             echo "----------------------------------------------------------------run migration"
             npm run migrations > migrations_dump.txt  
-            
             ls -la
             cd ..
+            
       - persist_to_workspace:
           root: .
           paths:
@@ -479,7 +479,6 @@ jobs:
             export OldWorkflowID=$(aws cloudformation list-exports \
               --query "Exports[?Name=='WorkflowID'].Value" \
               --output text)
-              
             echo $OldWorkflowID 
 
             echo "-------------------------------------------------------Running update cloudfront distribution "
