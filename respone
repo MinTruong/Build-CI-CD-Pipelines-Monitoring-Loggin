@@ -1,0 +1,22 @@
+#Section 2: Deploying Working, Trustworthy Software
+6. [SCREENSHOT10] - Evidence that the deploy jobs only happen on the master branc
+-I know, if i create new branch and commit any things on that, so my pipeline just run upto scan-backend step.
+
+7. [URL02] - Evidence of deployed and functioning front-end application in an S3 bucket  
+-For application in an S3 bucket, before i tested and i can add new employee. 
+-I have checked on DB, i saw new employee have been created successfully. I have pulled image "query-db.png" on submit folder
+=>> for your case, i thinks result for the section is expired (4 hours) and new credential (aws_access_key_id, aws_secret_access_key,aws_session_token) will be generate. Therefore you can't accsess to DB with old credential -> you can't add database.
+
+8. [URL03_SCREENSHOT] - Evidence of deployed and functioning front-end application in CloudFront.
+-Just like point 7 :))
+
+
+#Section 3: Turn Errors into Sirens 
+
+2. [SCREENSHOT11] - Evidence that Prometheus is monitoring memory, CPU and disk usage of EC2 instances. ❌
+3. [SCREENSHOT12] - Evidence that Prometheus and Alert Manager send alerts when certain conditions exist in the EC2 instance. ❌
+
+with this step 2 i don't remember screenshot, buy with step 3 I have pulled image "query-db.png" on submit folder "[SCREENSHOT12]-2.png"
+
+=>>>>> If i run and set up again my project i will lose many time, but a have 2 projects left and that have due on 26/06/2015
+=>>>>> I hope mentor can let me get through this project. Thank you so much :)
