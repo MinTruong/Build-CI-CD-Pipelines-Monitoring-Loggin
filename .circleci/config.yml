@@ -335,6 +335,7 @@ jobs:
       - run:
           name: run migration
           command: |
+
             cd backend
             npm install   
             # echo "----------------------------------------------------------------revet DB before migration"
@@ -343,7 +344,7 @@ jobs:
             npm run migrations > migrations_dump.txt  
             ls -la
             cd ..
-            
+
       - persist_to_workspace:
           root: .
           paths:
@@ -547,7 +548,7 @@ workflows:
       - run-migrations:
           requires: [test-backend, scan-backend]
       - deploy-frontend:
-          requires: [get-ip-ec2, configure-infrastructure]
+          requires: [get-ip-ec2, run-migrations, configure-infrastructure]
       - deploy-backend:
           requires: [get-ip-ec2, run-migrations, configure-infrastructure]
       - smoke-test:
@@ -556,13 +557,3 @@ workflows:
           requires: [smoke-test]
       - cleanup-phase:
           requires: [cloudfront-update]
-
-      
-      
-
-
-
-      
-
-
-     
