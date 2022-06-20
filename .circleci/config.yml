@@ -414,7 +414,7 @@ jobs:
             echo "--------------------------------before .env"
             echo cat .env
             echo "NODE_ENV=production" >> .env
-            npm run install
+            npm install
             npm run build
             echo "--------------------------------after .env"
             cat .env
@@ -559,19 +559,19 @@ workflows:
       #     requires: [cloudfront-update]
 
 
-      - deploy-infrastructure
-      - get-ip-ec2:
-          requires: [deploy-infrastructure]
-      - configure-infrastructure:
-          requires: [get-ip-ec2]
-      - run-migrations:
-      - deploy-frontend:
-          requires: [run-migrations, configure-infrastructure]
-      - deploy-backend:
-          requires: [run-migrations, configure-infrastructure]
-      - smoke-test:
-          requires: [deploy-frontend, deploy-backend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup-phase:
-          requires: [cloudfront-update]
+    - deploy-infrastructure
+    - get-ip-ec2:
+        requires: [deploy-infrastructure]
+    - configure-infrastructure:
+        requires: [get-ip-ec2]
+    - run-migrations:
+    - deploy-frontend:
+        requires: [run-migrations, configure-infrastructure]
+    - deploy-backend:
+        requires: [run-migrations, configure-infrastructure]
+    - smoke-test:
+        requires: [deploy-frontend, deploy-backend]
+    - cloudfront-update:
+        requires: [smoke-test]
+    - cleanup-phase:
+        requires: [cloudfront-update]
