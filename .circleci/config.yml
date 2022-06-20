@@ -564,7 +564,7 @@ workflows:
         requires: [deploy-infrastructure]
     - configure-infrastructure:
         requires: [get-ip-ec2]
-    - run-migrations:
+    - run-migrations
     - deploy-frontend:
         requires: [run-migrations, configure-infrastructure]
     - deploy-backend:
