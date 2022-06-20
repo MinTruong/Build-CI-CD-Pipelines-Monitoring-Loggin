@@ -388,9 +388,8 @@ jobs:
             npm install
             npm run build
             # tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-a343558 --recursive
-            # aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # - destroy_environment
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy_environment
       
 
   ##################################################################################
@@ -527,42 +526,38 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [projectc-new]
-      # - get-ip-ec2:
-      #     requires: [deploy-infrastructure]
-      # - configure-infrastructure:
-      #     requires: [get-ip-ec2]
-      # - run-migrations:
-      #     requires: [test-backend, scan-backend]
-      # - deploy-frontend:
-      #     requires: [get-ip-ec2, configure-infrastructure]
-      # - deploy-backend:
-      #     requires: [get-ip-ec2, run-migrations, configure-infrastructure]
-      # - smoke-test:
-      #     requires: [deploy-frontend, deploy-backend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cleanup-phase:
-      #     requires: [cloudfront-update]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [projectc-new]
+      - get-ip-ec2:
+          requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [get-ip-ec2]
+      - run-migrations:
+          requires: [test-backend, scan-backend]
+      - deploy-frontend:
+          requires: [get-ip-ec2, configure-infrastructure]
+      - deploy-backend:
+          requires: [get-ip-ec2, run-migrations, configure-infrastructure]
+      - smoke-test:
+          requires: [deploy-frontend, deploy-backend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup-phase:
+          requires: [cloudfront-update]
 
-      # - run-migrations
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      - deploy-frontend
       
       
 
